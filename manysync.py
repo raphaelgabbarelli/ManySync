@@ -1,5 +1,7 @@
-import os, flask, webbrowser
-from boxsdk import OAuth2
+import os
+import flask
+import webbrowser
+from boxsdk import OAuth2, Client
 
 
 def sanitize_config_line(line):
@@ -13,7 +15,7 @@ def sanitize_config_line(line):
     return line.replace("\n", "")
 
 
-config = { "client_id": None, "client_secret": None }
+config = {"client_id": None, "client_secret": None}
 config_file_path = os.path.join(os.getcwd(), "config.txt")
 auth_token_file_path = os.path.join(os.getcwd(), "auth.txt")
 
