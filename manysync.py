@@ -3,6 +3,7 @@ import webbrowser
 from boxsdk import OAuth2, Client
 import server
 
+
 def sanitize_config_line(line):
     """
         sanitizes the configuration entries
@@ -18,13 +19,14 @@ def store_auth_token(code):
     config["authorization_token"] = code
 
 
-def save_access_token(code):
+def save_access_token(authorization_code, refresh_code):
     auth_file = open(auth_token_file_path, "w")
-    auth_file.write(code)
+    auth_file.write(authorization_code + "\n")
+    auth_file.write(refresh_code)
     auth_file.close()
 
 
-config = {"client_id": None, "client_secret": None, "access_token": None, "authorization_token": None}
+config = {"client_id": None, "client_secret": None, "access_token": None, "authorization_token": None, "refresh_token": None}
 config_file_path = os.path.join(os.getcwd(), "config.txt")
 auth_token_file_path = os.path.join(os.getcwd(), "auth.txt")
 
@@ -46,24 +48,26 @@ else:
 
 # if we already have an authorization token, we should try to use it!
 if os.path.isfile(auth_token_file_path):
-    print("Loading access token")
+    print("Loading authorization token")
     auth_file = open(auth_token_file_path)
-    config["access_token"] = sanitize_config_line(auth_file.readline())
+    config["authorization_token"] = sanitize_config_line(auth_file.readline())
+    config["refresh_token"] = sanitize_config_line(auth_file.readline())
     auth_file.close()
 
-if config["access_token"] is None:
+if config["authorization_token"] is None:
     oauth = OAuth2(client_id=config["client_id"], client_secret=config["client_secret"])
     auth_url, csrf_token = oauth.get_authorization_url("http://localhost:9010")
     server.store_auth_token = store_auth_token
     webbrowser.open(auth_url)
     server.start()
     oauth = OAuth2(client_id=config["client_id"], client_secret=config["client_secret"])
-    access_token, refresh_token = oauth.authenticate(config["authorization_token"])
-    save_access_token(access_token)
+    authorization_token, refresh_token = oauth.authenticate(config["authorization_token"])
+    save_access_token(authorization_token, refresh_token)
 
 
-oauth = OAuth2(client_id=config["client_id"], client_secret=config["client_secret"], access_token=config["access_token"])
+oauth = OAuth2(client_id=config["client_id"], client_secret=config["client_secret"], access_token=config["authorization_token"], refresh_token=config["refresh_token"])
 client = Client(oauth)
 root_folder = client.folder(folder_id='0').get()
-for key in root_folder.keys():
-    print(key + " " + root_folder[key])
+for item in root_folder.get_items(100):
+    print("Type: {0} - ID: {1} - Name: {2}".format(item.id, item.type, item.name))
+ 
