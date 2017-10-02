@@ -1,0 +1,1 @@
+print('starting setup of manysync 0.1.0')

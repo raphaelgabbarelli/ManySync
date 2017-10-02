@@ -1,13 +1,14 @@
 import os
 import webbrowser
-from boxsdk import OAuth2, Client
-from boxsdk.exception import BoxOAuthException
-import server
 import json
 
-import config as cfg
+from boxsdk import OAuth2, Client
+from boxsdk.exception import BoxOAuthException
 
-CONFIG_FILE = os.path.join(os.getcwd(), "config .json")
+import manysync.server as server
+import manysync.config as cfg
+
+CONFIG_FILE = os.path.join(os.getcwd(), "config.json")
 
 configuration = cfg.Config()
 
@@ -34,7 +35,6 @@ def save_access_token(authorization_code, refresh_code):
     auth_file.write(authorization_code + "\n")
     auth_file.write(refresh_code)
     auth_file.close()
-
 
 
 config_file_path = os.path.join(os.getcwd(), "config.txt")

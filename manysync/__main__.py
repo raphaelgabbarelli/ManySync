@@ -1,0 +1,1 @@
+print("start main of manysync 0.1.0")
