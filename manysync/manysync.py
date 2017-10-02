@@ -7,7 +7,7 @@ import json
 
 import config as cfg
 
-CONFIG_FILE = os.path.join(os.getcwd(), "config.json")
+CONFIG_FILE = os.path.join(os.getcwd(), "config .json")
 
 configuration = cfg.Config()
 
