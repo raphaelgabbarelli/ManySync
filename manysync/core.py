@@ -65,7 +65,6 @@ def authenticate(config):
 
 
 def main():
-    print("Entering core.main")
     global configuration
     global CONFIG_FILE
     cfg.load_config(configuration, CONFIG_FILE)
